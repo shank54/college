@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+<script>
+{% block jquery %}
+var endpoint = 'statistics' 
+
+//Code to display the charts
+var ctx = document.getElementById("myChart");
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ["A", "A-", "B+", "B", "B-", "C+","C","F"],
+        datasets: [{
+            label: '# students',
+            data: [{{score.A}},{{score.Aminus}},{{score.Bplus}},{{score.B}},{{score.Bminus}},{{score.Cplus}},{{score.C}},{{score.F}}],
+            backgroundColor: [
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(184, 94, 100, 0.2)',
+            'rgba(173, 7, 22, 0.4)',
+            'rgba(55, 94, 100, 0.2)',
+            'rgba(146, 199, 100, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.6)',
+            ],
+            borderColor: [
+            'rgba(54, 162, 235,1)',
+            'rgba(255, 99, 132, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(184, 94, 100, 1)',
+            'rgba(173, 7, 22, 1)',
+            'rgba(55, 94, 100, 1)',
+            'rgba(146, 199, 100,1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+{% endblock %}
+</script>
+{% block sidebar %}
+
+{% csrf_token %}
+<input type="text" id="search" name="search" class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" style="
+padding-right: 300px;
+"/>
+
+{% endblock %}
+{% block list%}
+<ul id="search-results" style="
+padding-left: 110px;
+width: 1230px;
+">
+
+</ul>
+{% endblock %}
+{% block content %}s
+    <div>
+        <h3>{{score.Subject}} {{score.Catalog}} - <bold>{{score.Title}}</bold></h3>
+        <h3>{{score.Term}}</h3>
+        <h3>{{score.Primary_Instructor}}</h3>
+        <h5>Avg Grade: {{score.Avg_Grade_in_Grade_Points}}</h5>
+    </div>
+    <div>
+        <canvas id="myChart" width="481" height="offsetHeight" style="display: block; width: 10%; height: 100%;"></canvas>
+    </div>
+
+    <div class="table-responsive">
+        <h3>Other</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                  <th scope="col">Catalog</th>
+                  <th scope="col">Term</th>
+                  <th scope="col">Instructor</th>
+                  <th scope="col">Avg_Grade</th>
+                  <th scope="col">Section</th>
+              </tr>
+          </thead>
+          <tbody>
+            {% for scor in score3 %}
+            {% if scor.id != score.id %}
+            <tr>
+                <td scope="row">{{scor.Subject}} {{scor.Catalog}}</td>
+                <td scope="row">{{scor.Term}}</td>
+                {% if scor.Primary_Instructor%}
+                <td><a href="/score/get/{{scor.id}}/">{{scor.Primary_Instructor}}</a></td>
+                {% else %}
+                <td><a href="/score/get/{{scor.id}}/">Name not Available</a></td>
+                {% endif %}
+                <td>{{scor.Avg_Grade_in_Grade_Points}}</td>
+                <td>{{scor.Section}}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
+
+{% endblock %}

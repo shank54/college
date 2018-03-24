@@ -1,0 +1,5 @@
+
+{% for score in scores %}
+	<a href="/score/get/{{score.id}}/" class="list-group-item ">{{score.Subject}} {{score.Catalog}} {{score.Title}}</a>
+{% endfor %}
+
